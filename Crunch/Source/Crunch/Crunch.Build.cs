@@ -25,7 +25,10 @@ public class Crunch : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] 
 		{  
 			"GameplayAbilities",
-			"GameplayTasks"
+			"GameplayTasks",
+			"UMG",
+			"Slate",
+			"SlateCore"
 		});
 
 		// Uncomment if you are using Slate UI
