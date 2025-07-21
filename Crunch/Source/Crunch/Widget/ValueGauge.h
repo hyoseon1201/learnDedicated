@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "AttributeSet.h"
 #include "ValueGauge.generated.h"
 
 /**
@@ -15,6 +16,7 @@ class CRUNCH_API UValueGauge : public UUserWidget
 	GENERATED_BODY()
 public:
 	virtual void NativePreConstruct() override;
+	void SetAndBoundToGameplayAttribute(class UAbilitySysyemComponent* AbilitySystemComponent, const FGameplayAttribute& Attribute, const FGameplayAttribute& MaxAttribute);
 	void SetValue(float NewValue, float NewMaxValue);
 
 private:
