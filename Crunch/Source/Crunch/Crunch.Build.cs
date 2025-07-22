@@ -26,6 +26,7 @@ public class Crunch : ModuleRules
 		{  
 			"GameplayAbilities",
 			"GameplayTasks",
+			"GameplayTags",
 			"UMG",
 			"Slate",
 			"SlateCore"
