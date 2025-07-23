@@ -21,6 +21,13 @@ public:
 	static FGameplayTag GetComboChangedEventEndTag();
 
 private:
+	void SetupWaitComboInputPress();
+
+	void TryCommitCombo();
+
+	UFUNCTION()
+	void HandleInputPress(float TimeWaited);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* ComboMontage;
 
