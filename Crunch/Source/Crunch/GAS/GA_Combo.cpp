@@ -37,6 +37,13 @@ void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 		WaitComboChangeEventTask->ReadyForActivation();
 	}
 
+	if (K2_HasAuthority())
+	{
+		UAbilityTask_WaitGameplayEvent* WaitTargetingEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, GetComboTargetEventTag());
+		WaitTargetingEventTask->EventReceived.AddDynamic(this, &UGA_Combo::DoDamage);
+		WaitTargetingEventTask->ReadyForActivation();
+	}
+
 	SetupWaitComboInputPress();
 }
 
@@ -48,6 +55,11 @@ FGameplayTag UGA_Combo::GetComboChangedEventTag()
 FGameplayTag UGA_Combo::GetComboChangedEventEndTag()
 {
 	return FGameplayTag::RequestGameplayTag("Ability.Combo.Change.End");
+}
+
+FGameplayTag UGA_Combo::GetComboTargetEventTag()
+{
+	return FGameplayTag::RequestGameplayTag("Ability.Combo.Damage");
 }
 
 void UGA_Combo::SetupWaitComboInputPress()
@@ -96,4 +108,9 @@ void UGA_Combo::ComboChangedEventReceived(FGameplayEventData Data)
 	NextComboName = TagNames.Last();
 
 	UE_LOG(LogTemp, Warning, TEXT("next combo is now : %s"), *NextComboName.ToString());
+}
+
+void UGA_Combo::DoDamage(FGameplayEventData Data)
+{
+	TArray<FHitResult> HitResult = GetHitResultFromSweepLocationTargetData(Data.TargetData, 30.f, true, true);
 }
