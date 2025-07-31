@@ -9,6 +9,8 @@
 #include "Widget/OverHeadStatsGauge.h"
 #include "Kismet/GameplayStatics.h"
 #include "GAS/CAbilitySystemStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ACCharacter::ACCharacter()
@@ -131,12 +133,47 @@ void ACCharacter::UpdateHeadGaugeVisibility()
 	}
 }
 
+void ACCharacter::SetStatusGaugeEnabled(bool bIsEnabled)
+{
+	GetWorldTimerManager().ClearTimer(HeadStatGaugeVisibilityUpdateTimerHandle);
+	if (bIsEnabled)
+	{
+		ConfigureOverHeadStatsWidget();
+	}
+	else
+	{
+		OverHeadWidgetComponent->SetHiddenInGame(true);
+	}
+}
+
+void ACCharacter::PlayDeathAnimation()
+{
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+}
+
 void ACCharacter::StartDeathSequence()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Dead"));
+	OnDead();
+	PlayDeathAnimation();
+	SetStatusGaugeEnabled(false);
+
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ACCharacter::Respawn()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Respawn"));
+	OnRespawn();
+}
+
+void ACCharacter::OnDead()
+{
+}
+
+void ACCharacter::OnRespawn()
+{
 }
