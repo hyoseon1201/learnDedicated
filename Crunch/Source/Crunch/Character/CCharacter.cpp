@@ -13,6 +13,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Net/UnrealNetwork.h"
 
+
 // Sets default values
 ACCharacter::ACCharacter()
 {
@@ -49,6 +50,7 @@ bool ACCharacter::IsLocallyControlledByPlayer() const
 void ACCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ACCharacter, TeamID);
 }
 
 void ACCharacter::PossessedBy(AController* NewController)
@@ -79,7 +81,6 @@ void ACCharacter::Tick(float DeltaTime)
 void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	DOREPLIFETIME(ACPlayerController, TeamID);
 }
 
 UAbilitySystemComponent* ACCharacter::GetAbilitySystemComponent() const
