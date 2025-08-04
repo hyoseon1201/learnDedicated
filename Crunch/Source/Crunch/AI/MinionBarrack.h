@@ -28,6 +28,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	FGenericTeamId BarrackTeamId;
 
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	int MinionPerGroup = 3;
+
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	float GroupSpawnInterval = 5.f;
+
 	UPROPERTY()
 	TArray<class AMinion*> MinionPool;
 
@@ -38,8 +44,10 @@ private:
 	TArray<class APlayerStart*> SpawnSpots;
 
 	int NextSpawnSpotIndex = -1;
+	FTimerHandle SpawnIntervalTimerHandle;
 
 	const APlayerStart* GetNextSpawnSpot();
-
+	void SpawnNewGroup();
 	void SpawnNewMinions(int Amt);
+	AMinion* GetNextAvaliableMinion() const;
 };
