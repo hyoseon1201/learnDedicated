@@ -194,6 +194,12 @@ void ACCharacter::PlayDeathAnimation()
 void ACCharacter::StartDeathSequence()
 {
 	OnDead();
+
+	if (CAbilitySystemComponent)
+	{
+		CAbilitySystemComponent->CancelAllAbilities();
+	}
+
 	PlayDeathAnimation();
 	SetStatusGaugeEnabled(false);
 
@@ -243,6 +249,11 @@ void ACCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID)
 FGenericTeamId ACCharacter::GetGenericTeamId() const
 {
 	return TeamID;
+}
+
+void ACCharacter::OnRep_TeamID()
+{
+	// override in child class
 }
 
 void ACCharacter::SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled)
