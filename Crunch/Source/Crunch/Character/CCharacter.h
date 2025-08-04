@@ -43,23 +43,19 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 private:
-	void BindGASChangeDelegates();
-	void DeadTagUpdated(const FGameplayTag Tag, int32 NewCount);
-
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
 	class UCAbilitySystemComponent* CAbilitySystemComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Gameplay Ability")
 	class UCAttributeSet* CAttributeSet;
 
+	void BindGASChangeDelegates();
+	void DeadTagUpdated(const FGameplayTag Tag, int32 NewCount);
+
 	/**************************************************************************/
 	/*                                  UI                                    */
 	/**************************************************************************/
 private:
-	void ConfigureOverHeadStatsWidget();
-	void UpdateHeadGaugeVisibility();
-	void SetStatusGaugeEnabled(bool bIsEnabled);
-
 	UPROPERTY(VisibleDefaultsOnly, Category = "UI")
 	class UWidgetComponent* OverHeadWidgetComponent;
 
@@ -70,6 +66,10 @@ private:
 	float HeadStatsGaugeVisibilityRangeSquared = 1000000.f;
 
 	FTimerHandle HeadStatGaugeVisibilityUpdateTimerHandle;
+
+	void ConfigureOverHeadStatsWidget();
+	void UpdateHeadGaugeVisibility();
+	void SetStatusGaugeEnabled(bool bIsEnabled);
 
 	/**************************************************************************/
 	/*                            Death and Respawn                           */
@@ -115,8 +115,8 @@ private:
 	/*                                  AI                                    */
 	/**************************************************************************/
 private:
-	void SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled);
-
 	UPROPERTY()
 	class UAIPerceptionStimuliSourceComponent* PerceptionStimuliSourceComponent;
+
+	void SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled);
 };
