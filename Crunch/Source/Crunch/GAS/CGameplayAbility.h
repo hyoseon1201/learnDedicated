@@ -25,6 +25,7 @@ protected:
 	void PushSelf(const FVector& PushVelocity);
 	void PushTarget(AActor* Target, const FVector& PushVelocity);
 	ACharacter* GetOwningAvatarCharacter();
+	void ApplyGameplayEffectToHitResultActor(const FHitResult& HitResult, TSubclassOf<UGameplayEffect> GameplayEffect, int Level);
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
 	bool bShouldDrawDebug = false;
