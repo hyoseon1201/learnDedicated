@@ -4,20 +4,27 @@
 
 #include "CoreMinimal.h"
 #include "GAS/CGameplayAbility.h"
-#include "UpperCut.generated.h"
+#include "GA_UpperCut.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRUNCH_API UUpperCut : public UCGameplayAbility
+class CRUNCH_API UGA_UpperCut : public UCGameplayAbility
 {
 	GENERATED_BODY()
-	
 public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	float TargetSweepSphereRadius = 80.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* UpperCutMontage;
+
+	static FGameplayTag GetUpperCutLaunchTag();
+
+	UFUNCTION()
+	void StartLaunching(FGameplayEventData EventData);
 };
