@@ -7,6 +7,12 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/GAP_Launched.h"
+#include "GAS/CAbilitySystemStatics.h"
+
+UCGameplayAbility::UCGameplayAbility()
+{
+    ActivationBlockedTags.AddTag(UCAbilitySystemStatics::GetStunStatTag());
+}
 
 UAnimInstance* UCGameplayAbility::GetOwnerAnimInstance() const
 {

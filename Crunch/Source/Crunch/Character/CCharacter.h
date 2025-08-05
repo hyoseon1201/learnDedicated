@@ -51,6 +51,7 @@ private:
 
 	void BindGASChangeDelegates();
 	void DeadTagUpdated(const FGameplayTag Tag, int32 NewCount);
+	void StunTagUpdated(const FGameplayTag Tag, int32 NewCount);
 
 	/**************************************************************************/
 	/*                                  UI                                    */
@@ -70,6 +71,16 @@ private:
 	void ConfigureOverHeadStatsWidget();
 	void UpdateHeadGaugeVisibility();
 	void SetStatusGaugeEnabled(bool bIsEnabled);
+
+	/**************************************************************************/
+	/*                                  Stun                                  */
+	/**************************************************************************/
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Stun")
+	UAnimMontage* StunMontage;
+
+	virtual void OnStun();
+	virtual void OnRecoverFromStun();
 
 	/**************************************************************************/
 	/*                            Death and Respawn                           */
