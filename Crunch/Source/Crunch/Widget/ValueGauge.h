@@ -21,18 +21,27 @@ public:
 	void SetValue(float NewValue, float NewMaxValue);
 
 private:
-	void ValueChanged(const FOnAttributeChangeData& ChangedData);
-	void MaxValueChanged(const FOnAttributeChangeData& ChangedData);
-
 	float CachedValue;
 	float MaxCachedValue;
 
 	UPROPERTY(EditAnywhere, Category = "Visual")
 	FLinearColor BarColor;
 
+	UPROPERTY(EditAnywhere, Category = "Visual")
+	FSlateFontInfo ValueTextFont;
+
+	UPROPERTY(EditAnywhere, Category = "Visual")
+	bool bValueTextVisible = true;
+
+	UPROPERTY(EditAnywhere, Category = "Visual")
+	bool bProgressBarVisible = true;
+
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
 	class UProgressBar* ProgressBar;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
 	class UTextBlock* ValueText;
+
+	void ValueChanged(const FOnAttributeChangeData& ChangedData);
+	void MaxValueChanged(const FOnAttributeChangeData& ChangedData);
 };
