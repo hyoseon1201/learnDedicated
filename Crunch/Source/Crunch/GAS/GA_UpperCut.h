@@ -30,7 +30,11 @@ private:
 	UAnimMontage* UpperCutMontage;
 
 	static FGameplayTag GetUpperCutLaunchTag();
+	FName NextComboName;
 
 	UFUNCTION()
 	void StartLaunching(FGameplayEventData EventData);
+
+	UFUNCTION()
+	void HandleComboChangeEvent(FGameplayEventData EventData);
 };
