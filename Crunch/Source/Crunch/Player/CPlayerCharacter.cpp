@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "GAS/CAbilitySystemStatics.h"
 
 ACPlayerCharacter::ACPlayerCharacter()
 {
@@ -84,6 +86,12 @@ void ACPlayerCharacter::HandleAbilityInput(const FInputActionValue& InputActionV
 	else
 	{
 		GetAbilitySystemComponent()->AbilityLocalInputReleased((int32)InputID);
+	}
+
+	if (InputID == ECAbilityInputID::BasicAttack)
+	{
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, UCAbilitySystemStatics::GetBasicAttackInputPressedTag(), FGameplayEventData());
+		Server_SendGameplayEventToSelf(UCAbilitySystemStatics::GetBasicAttackInputPressedTag(), FGameplayEventData());
 	}
 }
 
