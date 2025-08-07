@@ -4,15 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/IUserObjectListEntry.h"
 #include "AbilityGauge.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CRUNCH_API UAbilityGauge : public UUserWidget
+class CRUNCH_API UAbilityGauge : public UUserWidget, public IUserObjectListEntry
 {
 	GENERATED_BODY()
+public:
+	virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 	
 private:
 	UPROPERTY(meta = (BindWidget))

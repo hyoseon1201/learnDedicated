@@ -3,3 +3,7 @@
 
 #include "Widget/AbilityGauge.h"
 
+void UAbilityGauge::NativeOnListItemObjectSet(UObject* ListItemObject)
+{
+	IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
+}
