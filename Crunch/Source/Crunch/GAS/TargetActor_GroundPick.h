@@ -19,6 +19,7 @@ public:
 
 	virtual void ConfirmTargetingAndContinue() override;
 	void SetTargetAreaRadius(float NewRadius);
+	void SetTargetOptions(bool bTargetFriendly, bool bTargetEnemy);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Targetting")
@@ -26,6 +27,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Targetting")
 	float TargetAreaRadius = 300.f;
+
+	bool bShouldTargetEnemy = true;
+	bool bShouldTargetFriendly = false;
 
 	virtual void Tick(float DeltaTime) override;
 
