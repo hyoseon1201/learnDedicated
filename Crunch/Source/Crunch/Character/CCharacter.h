@@ -57,6 +57,9 @@ private:
 	void BindGASChangeDelegates();
 	void DeadTagUpdated(const FGameplayTag Tag, int32 NewCount);
 	void StunTagUpdated(const FGameplayTag Tag, int32 NewCount);
+	void AimTagUpdated(const FGameplayTag Tag, int32 NewCount);
+	
+	void SetIsAiming(bool bIsAiming);
 
 	/**************************************************************************/
 	/*                                  UI                                    */
