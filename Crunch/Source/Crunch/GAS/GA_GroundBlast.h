@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GAS/CGameplayAbility.h"
+#include "GAS/CGameplayAbilityTypes.h"
 #include "GA_GroundBlast.generated.h"
 
 /**
@@ -21,7 +22,16 @@ public:
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Targetting")
+	float TargetAreaRadius = 300.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Targetting")
+	float TargetTraceRange = 2000.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Targetting")
 	TSubclassOf<class ATargetActor_GroundPick> TargetActorClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	FGenericDamageEffectDef DamageEffectDef;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* GroundBlastMontage;

@@ -21,6 +21,9 @@ public:
 	void SetTargetAreaRadius(float NewRadius);
 	void SetTargetOptions(bool bTargetFriendly, bool bTargetEnemy);
 
+	FORCEINLINE void SetTargetTraceRange(float NewRange) { TargetTraceRange = NewRange; }
+	FORCEINLINE void SetShouldDrawDebug(bool bDrawDebug) { bShouldDrawDebug = bDrawDebug; }
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Targetting")
 	float TargetTraceRange = 2000.f;
@@ -30,6 +33,7 @@ protected:
 
 	bool bShouldTargetEnemy = true;
 	bool bShouldTargetFriendly = false;
+	bool bShouldDrawDebug = false;
 
 	virtual void Tick(float DeltaTime) override;
 
