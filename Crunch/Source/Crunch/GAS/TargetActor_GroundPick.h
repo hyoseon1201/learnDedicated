@@ -24,7 +24,10 @@ public:
 	FORCEINLINE void SetTargetTraceRange(float NewRange) { TargetTraceRange = NewRange; }
 	FORCEINLINE void SetShouldDrawDebug(bool bDrawDebug) { bShouldDrawDebug = bDrawDebug; }
 
-protected:
+private:
+	UPROPERTY(VisibleDefaultsOnly, Category = "Visual")
+	class UDecalComponent* DecalComp;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Targetting")
 	float TargetTraceRange = 2000.f;
 
