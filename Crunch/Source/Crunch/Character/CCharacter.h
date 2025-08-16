@@ -8,6 +8,7 @@
 #include "GameplayTagContainer.h"
 #include "GenericTeamAgentInterface.h"
 #include "GAS/CGameplayAbilityTypes.h"
+#include "GameplayEffectTypes.h"
 #include "CCharacter.generated.h"
 
 UCLASS()
@@ -61,6 +62,8 @@ private:
 	
 	void SetIsAiming(bool bIsAiming);
 	virtual void OnAimStateChanged(bool bIsAiming);
+
+	void MoveSpeedUpdated(const FOnAttributeChangeData& Data);
 
 	/**************************************************************************/
 	/*                                  UI                                    */
