@@ -5,6 +5,10 @@
 
 #include "GAS/CAbilitySystemStatics.h"
 #include "Engine/OverlapResult.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+#include "GAS/CAttributeSet.h"
+#include "GAS/CHeroAttributeSet.h"
 
 UGAP_Dead::UGAP_Dead()
 {
@@ -24,16 +28,27 @@ void UGAP_Dead::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 	if (K2_HasAuthority())
 	{
 		AActor* Killer = TriggerEventData->ContextHandle.GetEffectCauser();
-		if (Killer)
+		if (!Killer || !UCAbilitySystemStatics::IsHero(Killer))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("I am Dead, the Killer is : %s"), *Killer->GetName());
+			Killer = nullptr;
 		}
 
 		TArray<AActor*> RewardTargets = GetRewardTargets();
-		for (const AActor* RewardTarget : RewardTargets)
+		if (RewardTargets.Num() == 0 && !Killer)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Find Reward Target : %s"), *RewardTarget->GetName());
+			K2_EndAbility();
+			return;
 		}
+
+		if (Killer && RewardTargets.Contains(Killer))
+		{
+			RewardTargets.Add(Killer);
+		}
+
+		bool bFound = false;
+		float SelfExperience = GetAbilitySystemComponentFromActorInfo_Ensured()->GetGameplayAttributeValue(UCHeroAttributeSet::GetExperienceAttribute(), bFound);
+		float TotalExperienceReward = BaseExperienceReward + ExperienceRewardPerExperience * SelfExperience;
+		float TotalGoldReward = BaseGoldReward + GoldRewardPerExperience * SelfExperience;
 	}
 }
 
