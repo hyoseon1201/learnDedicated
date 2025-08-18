@@ -64,6 +64,8 @@ private:
 	virtual void OnAimStateChanged(bool bIsAiming);
 
 	void MoveSpeedUpdated(const FOnAttributeChangeData& Data);
+	void MaxHealthUpdated(const FOnAttributeChangeData& Data);
+	void MaxManaUpdated(const FOnAttributeChangeData& Data);
 
 	/**************************************************************************/
 	/*                                  UI                                    */
