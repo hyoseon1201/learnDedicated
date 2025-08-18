@@ -9,6 +9,7 @@
 #include "GAS/CAbilitySystemStatics.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GAS/PA_AbilitySystemGenerics.h"
 
 UCAbilitySystemComponent::UCAbilitySystemComponent()
 {
@@ -27,11 +28,12 @@ void UCAbilitySystemComponent::ServerSideInit()
 
 void UCAbilitySystemComponent::InitializeBaseAttributes()
 {
-	if (!BaseStatDataTable || !GetOwner())
+	if (!AbilitySystemGenerics || !AbilitySystemGenerics->GetBaseStatDataTable() || !GetOwner())
 	{
 		return;
 	}
 
+	const UDataTable* BaseStatDataTable = AbilitySystemGenerics->GetBaseStatDataTable();
 	const FHeroBaseStats* BaseStats = nullptr;
 
 	for (const TPair<FName, uint8*>& DataPair : BaseStatDataTable->GetRowMap())
@@ -65,7 +67,12 @@ void UCAbilitySystemComponent::ApplyInitialEffects()
 		return;
 	}
 
-	for (const TSubclassOf<UGameplayEffect>& EffectClass : InitialEffects)
+	if (!AbilitySystemGenerics)
+	{
+		return;
+	}
+
+	for (const TSubclassOf<UGameplayEffect>& EffectClass : AbilitySystemGenerics->GetInitialEffects())
 	{
 		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingSpec(EffectClass, 1, MakeEffectContext());
 		ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
@@ -75,6 +82,11 @@ void UCAbilitySystemComponent::ApplyInitialEffects()
 void UCAbilitySystemComponent::GiveInitialAbilities()
 {
 	if (!GetOwner() || !GetOwner()->HasAuthority())
+	{
+		return;
+	}
+
+	if (!AbilitySystemGenerics)
 	{
 		return;
 	}
@@ -89,7 +101,7 @@ void UCAbilitySystemComponent::GiveInitialAbilities()
 		GiveAbility(FGameplayAbilitySpec(AbilityPair.Value, 1, (int32)AbilityPair.Key, nullptr));
 	}
 
-	for (const TSubclassOf<UGameplayAbility>& PassiveAbility : PassiveAbilities)
+	for (const TSubclassOf<UGameplayAbility>& PassiveAbility : AbilitySystemGenerics->GetPassiveAbilities())
 	{
 		GiveAbility(FGameplayAbilitySpec(PassiveAbility, 1, -1, nullptr));
 	}
@@ -97,7 +109,12 @@ void UCAbilitySystemComponent::GiveInitialAbilities()
 
 void UCAbilitySystemComponent::ApplyFullStatEffect()
 {
-	AuthApplyGameplayEffect(FullStatEffect);
+	if (!AbilitySystemGenerics)
+	{
+		return;
+	}
+
+	AuthApplyGameplayEffect(AbilitySystemGenerics->GetFullStatEffect());
 }
 
 const TMap<ECAbilityInputID, TSubclassOf<UGameplayAbility>>& UCAbilitySystemComponent::GetAbilities() const
@@ -117,6 +134,11 @@ void UCAbilitySystemComponent::AuthApplyGameplayEffect(TSubclassOf<UGameplayEffe
 void UCAbilitySystemComponent::HealthUpdated(const FOnAttributeChangeData& ChangeData)
 {
 	if (!GetOwner() || !GetOwner()->HasAuthority())
+	{
+		return;
+	}
+
+	if (!AbilitySystemGenerics)
 	{
 		return;
 	}
@@ -141,9 +163,9 @@ void UCAbilitySystemComponent::HealthUpdated(const FOnAttributeChangeData& Chang
 		{
 			AddLooseGameplayTag(UCAbilitySystemStatics::GetHealthEmptyStatTag());
 
-			if (DeathEffect)
+			if (AbilitySystemGenerics && AbilitySystemGenerics->GetDeathEffect())
 			{
-				AuthApplyGameplayEffect(DeathEffect);
+				AuthApplyGameplayEffect(AbilitySystemGenerics->GetDeathEffect());
 			}
 
 			FGameplayEventData DeadAbilityEventData;
