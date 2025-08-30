@@ -145,6 +145,41 @@ bool UCAbilitySystemComponent::IsAtMaxLevel() const
 	return CurrentLevel >= MaxLevel;
 }
 
+void UCAbilitySystemComponent::Server_UpgadeAbilityWithID_Implementation(ECAbilityInputID InputID)
+{
+	bool bFound = false;
+	float UpgradePoint = GetGameplayAttributeValue(UCHeroAttributeSet::GetUpgradePointAttribute(), bFound);
+	if (!bFound || UpgradePoint <= 0)
+	{
+		return;
+	}
+
+	FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromInputID((int32)InputID);
+	if (!AbilitySpec || UCAbilitySystemStatics::IsAbilityAtMaxLevel(*AbilitySpec))
+	{
+		return;
+	}
+
+	SetNumericAttributeBase(UCHeroAttributeSet::GetUpgradePointAttribute(), UpgradePoint - 1);
+	AbilitySpec->Level += 1;
+	MarkAbilitySpecDirty(*AbilitySpec);
+}
+
+bool UCAbilitySystemComponent::Server_UpgadeAbilityWithID_Validate(ECAbilityInputID InputID)
+{
+	return true;
+}
+
+void UCAbilitySystemComponent::Client_AbilitySpecLevelUpdated_Implementation(FGameplayAbilitySpecHandle Handle, int NewLevel)
+{
+	FGameplayAbilitySpec* Spec = FindAbilitySpecFromHandle(Handle);
+	if (Spec)
+	{
+		Spec->Level = NewLevel;
+		AbilitySpecDirtiedCallbacks.Broadcast(*Spec);
+	}
+}
+
 void UCAbilitySystemComponent::AuthApplyGameplayEffect(TSubclassOf<UGameplayEffect> GameplayEffect, int Level)
 {
 	if (GetOwner() && GetOwner()->HasAuthority())

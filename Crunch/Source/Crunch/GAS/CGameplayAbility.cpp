@@ -8,10 +8,22 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GAS/GAP_Launched.h"
 #include "GAS/CAbilitySystemStatics.h"
+#include "AbilitySystemComponent.h"
 
 UCGameplayAbility::UCGameplayAbility()
 {
     ActivationBlockedTags.AddTag(UCAbilitySystemStatics::GetStunStatTag());
+}
+
+bool UCGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
+{
+    FGameplayAbilitySpec* AbilitySpec = ActorInfo->AbilitySystemComponent->FindAbilitySpecFromHandle(Handle);
+    if (AbilitySpec && AbilitySpec->Level <= 0)
+    {
+        return false;
+    }
+
+    return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
 
 UAnimInstance* UCGameplayAbility::GetOwnerAnimInstance() const

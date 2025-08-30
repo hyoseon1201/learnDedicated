@@ -27,6 +27,12 @@ public:
 
 	bool IsAtMaxLevel() const;
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_UpgadeAbilityWithID(ECAbilityInputID InputID);
+
+	UFUNCTION(Client, Reliable)
+	void Client_AbilitySpecLevelUpdated(FGameplayAbilitySpecHandle Handle, int NewLevel);
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Ability")
 	TMap<ECAbilityInputID, TSubclassOf<UGameplayAbility>> Abilities;
