@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/IUserObjectListEntry.h"
+#include "GameplayEffectTypes.h"
 #include "AbilityGauge.generated.h"
 
 class UAbilitySystemComponent;
@@ -98,4 +99,6 @@ private:
 
 	const FGameplayAbilitySpec* GetAbilitySpec();
 	void UpdateCanCast();
+	void UpgradePointUpdated(const FOnAttributeChangeData& Data);
+
 };

@@ -9,6 +9,7 @@
 #include "Components/TextBlock.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "GAS/CHeroAttributeSet.h"
 
 void UAbilityGauge::NativeConstruct()
 {
@@ -19,6 +20,16 @@ void UAbilityGauge::NativeConstruct()
 	{
 		OwnerASC->AbilityCommittedCallbacks.AddUObject(this, &UAbilityGauge::AbilityCommitted);
 		OwnerASC->AbilitySpecDirtiedCallbacks.AddUObject(this, &UAbilityGauge::AbilitySpecUpdated);
+		OwnerASC->GetGameplayAttributeValueChangeDelegate(UCHeroAttributeSet::GetUpgradePointAttribute()).AddUObject(this, &UAbilityGauge::UpgradePointUpdated);
+	}
+
+	bool bFound = false;
+	float UpgradePoint = OwnerASC->GetGameplayAttributeValue(UCHeroAttributeSet::GetUpgradePointAttribute(), bFound);
+	if (bFound)
+	{
+		FOnAttributeChangeData ChangeData;
+		ChangeData.NewValue = UpgradePoint;
+		UpgradePointUpdated(ChangeData);
 	}
 
 	OwnerAbilitySystemComponent = OwnerASC;
@@ -36,6 +47,7 @@ void UAbilityGauge::NativeOnListItemObjectSet(UObject* ListItemObject)
 
 	CooldownDurationText->SetText(FText::AsNumber(CooldownDuration));
 	CostText->SetText(FText::AsNumber(Cost));
+	LevelGauge->GetDynamicMaterial()->SetScalarParameterValue(AbilityLevelParamName, 0);
 }
 
 void UAbilityGauge::ConfigureWithWidgetData(const FAbilityWidgetData* WidgetData)
@@ -116,4 +128,20 @@ const FGameplayAbilitySpec* UAbilityGauge::GetAbilitySpec()
 void UAbilityGauge::UpdateCanCast()
 {
 	Icon->GetDynamicMaterial()->SetScalarParameterValue(CanCastAbilityParamName, bIsAbilityLearned ? 1 : 0);
+}
+
+void UAbilityGauge::UpgradePointUpdated(const FOnAttributeChangeData& Data)
+{
+	bool HasUpgradePoint = Data.NewValue > 0;
+	const FGameplayAbilitySpec* AbilitySpec = GetAbilitySpec();
+
+	if (AbilitySpec)
+	{
+		if (UCAbilitySystemStatics::IsAbilityAtMaxLevel(*AbilitySpec))
+		{
+			Icon->GetDynamicMaterial()->SetScalarParameterValue(UpgradePointAvaliableParamName, 0);
+			return;
+		}
+	}
+	Icon->GetDynamicMaterial()->SetScalarParameterValue(UpgradePointAvaliableParamName, HasUpgradePoint ? 1 : 0);
 }
