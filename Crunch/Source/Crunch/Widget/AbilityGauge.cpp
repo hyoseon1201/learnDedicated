@@ -18,8 +18,10 @@ void UAbilityGauge::NativeConstruct()
 	if (OwnerASC)
 	{
 		OwnerASC->AbilityCommittedCallbacks.AddUObject(this, &UAbilityGauge::AbilityCommitted);
+		OwnerASC->AbilitySpecDirtiedCallbacks.AddUObject(this, &UAbilityGauge::AbilitySpecUpdated);
 	}
 
+	OwnerAbilitySystemComponent = OwnerASC;
 	WholeNumberFormattingOptions.MaximumFractionalDigits = 0;
 	TwoDigitNumberFormattingOptions.MaximumFractionalDigits = 2;
 }
@@ -57,6 +59,18 @@ void UAbilityGauge::AbilityCommitted(UGameplayAbility* Ability)
 	}
 }
 
+void UAbilityGauge::AbilitySpecUpdated(const FGameplayAbilitySpec& AbilitySpec)
+{
+	if (AbilitySpec.Ability != AbilityCDO)
+	{
+		return;
+	}
+
+	bIsAbilityLearned = AbilitySpec.Level > 0;
+	LevelGauge->GetDynamicMaterial()->SetScalarParameterValue(AbilityLevelParamName, AbilitySpec.Level);
+	UpdateCanCast();
+}
+
 void UAbilityGauge::StartCooldown(float CooldownTimeRemaining, float CooldownDuration)
 {
 	CachedCooldownDuration = CooldownDuration;
@@ -84,4 +98,22 @@ void UAbilityGauge::UpdateCooldown()
 	CooldownCounterText->SetText(FText::AsNumber(CachedCooldownTimeRemaining, FormattingOptions));
 
 	Icon->GetDynamicMaterial()->SetScalarParameterValue(CooldownPercentParamname, 1.f - CachedCooldownTimeRemaining / CachedCooldownDuration);
+}
+
+const FGameplayAbilitySpec* UAbilityGauge::GetAbilitySpec()
+{
+	if (!CachedAbilitySpec)
+	{
+		if (AbilityCDO && OwnerAbilitySystemComponent)
+		{
+			CachedAbilitySpec = OwnerAbilitySystemComponent->FindAbilitySpecFromClass(AbilityCDO->GetClass());
+		}
+	}
+
+	return CachedAbilitySpec;
+}
+
+void UAbilityGauge::UpdateCanCast()
+{
+	Icon->GetDynamicMaterial()->SetScalarParameterValue(CanCastAbilityParamName, bIsAbilityLearned ? 1 : 0);
 }

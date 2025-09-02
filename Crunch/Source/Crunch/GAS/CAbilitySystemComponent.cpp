@@ -163,6 +163,7 @@ void UCAbilitySystemComponent::Server_UpgadeAbilityWithID_Implementation(ECAbili
 	SetNumericAttributeBase(UCHeroAttributeSet::GetUpgradePointAttribute(), UpgradePoint - 1);
 	AbilitySpec->Level += 1;
 	MarkAbilitySpecDirty(*AbilitySpec);
+	Client_AbilitySpecLevelUpdated(AbilitySpec->Handle, AbilitySpec->Level);
 }
 
 bool UCAbilitySystemComponent::Server_UpgadeAbilityWithID_Validate(ECAbilityInputID InputID)
