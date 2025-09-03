@@ -133,3 +133,14 @@ float UCAbilitySystemStatics::GetStaticCostForAbility(const UGameplayAbility* Ab
 	CostEffect->Modifiers[0].ModifierMagnitude.GetStaticMagnitudeIfPossible(1, Cost);
 	return FMath::Abs(Cost);
 }
+
+bool UCAbilitySystemStatics::CheckAbilityCost(const FGameplayAbilitySpec& AbilitySpec, const UAbilitySystemComponent& ASC)
+{
+	const UGameplayAbility* AbilityCDO = AbilitySpec.Ability;
+	if (AbilityCDO)
+	{
+		return AbilityCDO->CheckCost(AbilitySpec.Handle, ASC.AbilityActorInfo.Get());
+	}
+
+	return false;
+}

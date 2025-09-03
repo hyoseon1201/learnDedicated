@@ -10,6 +10,7 @@
 
 class UGameplayAbility;
 struct FGameplayAbilitySpec;
+class UAbilitySystemComponent;
 
 /**
  * 
@@ -38,4 +39,6 @@ public:
 
 	static float GetStaticCooldownDurationForAbility(const UGameplayAbility* Ability);
 	static float GetStaticCostForAbility(const UGameplayAbility* Ability);
+
+	static bool CheckAbilityCost(const FGameplayAbilitySpec& AbilitySpec, const UAbilitySystemComponent& ASC);
 };
