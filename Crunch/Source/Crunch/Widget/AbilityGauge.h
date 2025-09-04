@@ -58,7 +58,7 @@ private:
 	FName CanCastAbilityParamName = "CanCast";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Visual")
-	FName UpgradePointAvaliableParamName = "UpgradeAvaliable";
+	FName UpgradePointAvaliableParamName = "UpgradeAvailable";
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* Icon;
@@ -100,5 +100,6 @@ private:
 	const FGameplayAbilitySpec* GetAbilitySpec();
 	void UpdateCanCast();
 	void UpgradePointUpdated(const FOnAttributeChangeData& Data);
+	void ManaUpdated(const FOnAttributeChangeData& Data);
 
 };

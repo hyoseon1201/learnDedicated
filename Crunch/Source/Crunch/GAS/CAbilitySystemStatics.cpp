@@ -144,3 +144,67 @@ bool UCAbilitySystemStatics::CheckAbilityCost(const FGameplayAbilitySpec& Abilit
 
 	return false;
 }
+
+float UCAbilitySystemStatics::GetManaCostFor(const UGameplayAbility* AbilityCDO, const UAbilitySystemComponent& ASC, int AbilityLevel)
+{
+	float ManaCost = 0.f;
+
+	if (AbilityCDO)
+	{
+		UGameplayEffect* CostEffect = AbilityCDO->GetCostGameplayEffect();
+		if (CostEffect)
+		{
+			FGameplayEffectSpecHandle EffectSpec = ASC.MakeOutgoingSpec(CostEffect->GetClass(), AbilityLevel, ASC.MakeEffectContext());
+			CostEffect->Modifiers[0].ModifierMagnitude.AttemptCalculateMagnitude(*EffectSpec.Data.Get(), ManaCost);
+		}
+	}
+
+	return FMath::Abs(ManaCost);
+}
+
+float UCAbilitySystemStatics::GetCooldownDurationFor(const UGameplayAbility* AbilityCDO, const UAbilitySystemComponent& ASC, int AbilityLevel)
+{
+	float CooldownDuration = 0.f;
+
+	if (AbilityCDO)
+	{
+		UGameplayEffect* CooldownEffect = AbilityCDO->GetCooldownGameplayEffect();
+		if (CooldownEffect)
+		{
+			FGameplayEffectSpecHandle EffectSpec = ASC.MakeOutgoingSpec(CooldownEffect->GetClass(), AbilityLevel, ASC.MakeEffectContext());
+			CooldownEffect->DurationMagnitude.AttemptCalculateMagnitude(*EffectSpec.Data.Get(), CooldownDuration);
+		}
+	}
+
+	return FMath::Abs(CooldownDuration);
+}
+
+float UCAbilitySystemStatics::GetCooldownRemainingFor(const UGameplayAbility* AbilityCDO, const UAbilitySystemComponent& ASC)
+{
+	if (!AbilityCDO)
+	{
+		return 0.f;
+	}
+
+	UGameplayEffect* CooldownEffect = AbilityCDO->GetCooldownGameplayEffect();
+	if (!CooldownEffect)
+	{
+		return 0.f;
+	}
+
+	FGameplayEffectQuery CooldownEffectQuery;
+	CooldownEffectQuery.EffectDefinition = CooldownEffect->GetClass();
+
+	float CooldownRemaining = 0.f;
+	FJsonSerializableArrayFloat CooldownTimeRemaining = ASC.GetActiveEffectsTimeRemaining(CooldownEffectQuery);
+
+	for (float Remaining : CooldownTimeRemaining)
+	{
+		if (Remaining > CooldownRemaining)
+		{
+			CooldownRemaining = Remaining;
+		}
+	}
+
+	return CooldownRemaining;
+}
